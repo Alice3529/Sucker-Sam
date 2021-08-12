@@ -17,4 +17,9 @@ public class Blinky : MonoBehaviour, IGhostEndPoint
         }
         return null;
    }
+
+    public GameObject DoConverting(Transform cell, Transform player)
+    {
+        return null;
+    } 
 }

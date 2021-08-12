@@ -13,11 +13,16 @@ public class Pinky : MonoBehaviour, IGhostEndPoint
         if (Vector3.Distance(cell.position, player.position) < maxDistance1)
         {
             maxDistance1 = Vector3.Distance(cell.position, player.position);
-            GetPlayerRotation(player);
             GetComponent<Pathfinding>().SetMaxDistance(maxDistance1);
-            return ChangeCell(cell);
+            return cell.gameObject;
         }
         return null;
+    }
+
+    public GameObject DoConverting(Transform cell, Transform player)
+    {
+        GetPlayerRotation(player);
+        return ChangeCell(cell);
     }
 
 
@@ -34,7 +39,7 @@ public class Pinky : MonoBehaviour, IGhostEndPoint
         }
         else if (look == LookAt.up)
         {
-            coords += new Vector2(-5, 4);
+            coords += new Vector2(-4, 4);
         }
         else if (look == LookAt.down)
         {

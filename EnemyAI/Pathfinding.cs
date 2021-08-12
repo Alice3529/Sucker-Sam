@@ -99,9 +99,13 @@ public class Pathfinding : MonoBehaviour
         }
         if (endPoint != null)
         {
-            if (gameObject.tag == "inky" && enemy.IsInChasingMode())
+            if ((gameObject.tag == "inky" && enemy.IsInChasingMode()) ||
+                (gameObject.tag == "pinky" && enemy.IsInChasingMode()))
             {
-                endPoint = GetComponent<Inky>().DoConverting(endPoint.transform, player.transform);
+                print(endPoint);
+                if (GetComponent<IGhostEndPoint>().DoConverting(endPoint.transform, player.transform)!=null) {
+                    endPoint = GetComponent<IGhostEndPoint>().DoConverting(endPoint.transform, player.transform);
+                }
             }
         }
         else

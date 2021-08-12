@@ -28,13 +28,14 @@ namespace _Scripts.Player
         // Update is called once per frame
         void FixedUpdate()
         {
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            int[] wallsDirections = FindObjectOfType<SearchWalls>().GetDirections();//l,r,u,b
+            if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) && (wallsDirections[0]!=1)) 
                 _playerMovement.MoveLeft();
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            if ((Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) && (wallsDirections[3] != 1))
                 _playerMovement.MoveDown();
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            if ((Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) && (wallsDirections[1] != 1))
                 _playerMovement.MoveRight();
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && (wallsDirections[2] != 1))
                 _playerMovement.MoveUp();
         }
 

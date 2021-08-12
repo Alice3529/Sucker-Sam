@@ -7,4 +7,5 @@ using _Scripts.Player;
 public interface IGhostEndPoint 
 {
     public GameObject FindEndPointInChaseMode(Transform cell, float maxDistance1, Transform player);
+    public GameObject DoConverting(Transform cell, Transform player);
 }

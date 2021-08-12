@@ -19,6 +19,11 @@ namespace _Scripts.Player
         Collider2D[] collidersRL= new Collider2D[0];
         List<Collider2D> colliders = new List<Collider2D>();
 
+
+        public int[] GetDirections()
+        {
+            return directions;
+        }
         void Update()
         {
             directions = new int[4] { 0, 0, 0, 0 };
