@@ -91,10 +91,10 @@ public class Pathfinding : MonoBehaviour
             else if (enemy.IsInChasingMode() || (enemy.IsInFrightenedMode()))
             {
                 GameObject point = GetComponent<IGhostEndPoint>().FindEndPointInChaseMode(cell, maxDistance1, player.transform);
-                if (point != null) 
+                if (point != null)
                 {
                     endPoint = point;
-                }               
+                }
             }
         }
         if (endPoint != null)
@@ -102,20 +102,18 @@ public class Pathfinding : MonoBehaviour
             if ((gameObject.tag == "inky" && enemy.IsInChasingMode()) ||
                 (gameObject.tag == "pinky" && enemy.IsInChasingMode()))
             {
-                print(endPoint);
-                if (GetComponent<IGhostEndPoint>().DoConverting(endPoint.transform, player.transform)!=null) {
+                if (GetComponent<IGhostEndPoint>().DoConverting(endPoint.transform, player.transform) != null)
+                {
                     endPoint = GetComponent<IGhostEndPoint>().DoConverting(endPoint.transform, player.transform);
+
                 }
             }
-        }
-        else
-        {
-            con=false;
-        }
 
-        startPoint.GetComponent<Tile>().SetIsChecked(true);
-        maxDistance = 1000f;
-        maxDistance1 = 1000f;
+
+            startPoint.GetComponent<Tile>().SetIsChecked(true);
+            maxDistance = 1000f;
+            maxDistance1 = 1000f;
+        }
     }
 
     private void ColorStartAndEnd()

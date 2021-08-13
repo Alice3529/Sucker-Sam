@@ -39,7 +39,7 @@ public class Pinky : MonoBehaviour, IGhostEndPoint
         }
         else if (look == LookAt.up)
         {
-            coords += new Vector2(-4, 4);
+            coords += new Vector2(0, 4);
         }
         else if (look == LookAt.down)
         {

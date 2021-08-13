@@ -42,6 +42,11 @@ public class EnemyAI1 : MonoBehaviour
     [SerializeField] Vector2 enemyCoords;
 
 
+    public List<Transform> GetPatrollingPath()
+    {
+        return pathDotsTransform;
+    }
+
     public Vector2 GetEnemyCoords()
     {
         return enemyCoords;

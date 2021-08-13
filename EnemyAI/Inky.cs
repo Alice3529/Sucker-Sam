@@ -41,7 +41,7 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         GameObject changedCell = ChangeCell(cell);
         if (changedCell != null)
         {
-            return CellReflection(changedCell);
+          return CellReflection(changedCell);
         }
         return null;
     }
@@ -50,7 +50,6 @@ public class Inky : MonoBehaviour, IGhostEndPoint
     private GameObject ChangeCell(Transform cell)
     {
         Vector2 coords = cell.GetComponent<Tile>().GetCoords();
-        print(coords + "Coords");
         if (look == LookAt.right)
         {
             coords += new Vector2(2, 0);
@@ -61,7 +60,7 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         }
         else if (look == LookAt.up)
         {
-            coords += new Vector2(-2, 2);
+            coords += new Vector2(0, 2);
         }
         else if (look == LookAt.down)
         {
@@ -122,10 +121,6 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         Vector2 blinkyCoords = blinky.GetComponent<EnemyAI1>().GetEnemyCoords();
         Vector2 cellDistance = cellCoords-blinkyCoords;
         Vector2 newPoint = cellCoords+cellDistance;
-        print(cellCoords+"cellCoords");
-        print(blinkyCoords+"blinkyCoords");
-        print(cellDistance+"cellDistance");
-        print(newPoint+"newPoint");
         Dictionary<Vector2, GameObject> dic = GetComponent<Pathfinding>().GetDic();
 
         if (dic.ContainsKey(newPoint))
@@ -134,8 +129,6 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         }
         else
         {
-            print(corners[0]);
-            print(corners[1]);
             if (newPoint.x > corners[1].x && newPoint.y>corners[1].y)
             {
                 newPoint = new Vector2(corners[1].x, corners[1].y);
