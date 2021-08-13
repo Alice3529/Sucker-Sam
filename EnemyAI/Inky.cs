@@ -190,7 +190,6 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         foreach (Vector2 direction in directions)
         {
             Vector2 nearCell = currentCell + direction;
-            print(nearCell + "NearCell");
             if (dic.ContainsKey(nearCell))
             {
                 return nearCell;

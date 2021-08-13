@@ -5,6 +5,7 @@ using UnityEngine;
 public class wall : MonoBehaviour
 {
     [SerializeField] float timeToWait = 1f;
+    [SerializeField] GameObject wallBotom;
   
     public void SetTime()
     {
@@ -16,7 +17,9 @@ public class wall : MonoBehaviour
     {
         GetComponent<SpriteRenderer>().enabled = false;
         GetComponent<BoxCollider2D>().enabled = false;
+        wallBotom.SetActive(false);
         yield return new WaitForSeconds(timeToWait);
+        wallBotom.SetActive(true);
         GetComponent<SpriteRenderer>().enabled = true;
         GetComponent<BoxCollider2D>().enabled = true;
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using _Scripts.Player;
+using System;
 using Enemy;
 
 [RequireComponent(typeof(Pathfinding))]
@@ -40,7 +41,14 @@ public class EnemyAI1 : MonoBehaviour
     public bool inCage=true;
     string cellPinkyStart="2,5";
     [SerializeField] Vector2 enemyCoords;
+    List<string> lockCells = new List<string>() { "1,7", "2,7" };
+    List<Transform> lockCellsTransform= new List<Transform>();
+    public event Action<List<Transform>> lockFull;
 
+    public List<Transform> GetLockCells()
+    {
+        return lockCellsTransform;
+    }
 
     public List<Transform> GetPatrollingPath()
     {
@@ -70,6 +78,7 @@ public class EnemyAI1 : MonoBehaviour
                 if (child.gameObject.name == dot)
                 {
                      patdot = child.gameObject;
+                     break;
                 }
             }
             if (patdot.GetComponent<Tile>() != null)
@@ -352,6 +361,7 @@ public class EnemyAI1 : MonoBehaviour
     private void ThrowOffSettings()
         {
             inCage = true;
+            lockCellsTransform = new List<Transform>();
             waitMode = true;
             currentPath = null;  
             chasingMode = false;
@@ -372,6 +382,18 @@ public class EnemyAI1 : MonoBehaviour
                 SetFrightenedMode();
             }
         }
+        foreach (string cell in lockCells)
+        {
+            foreach (Transform child in grid.transform)
+            {
+                if (child.gameObject.name == cell)
+                {
+                    lockCellsTransform.Add(child);
+                    break;
+                }
+            }
+        }
+        lockFull(lockCellsTransform);
     }
 
     }

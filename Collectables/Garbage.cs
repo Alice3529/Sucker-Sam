@@ -11,6 +11,7 @@ namespace _Scripts.Collectables
     {
         public int pointsAmount=10;
 
+        
         public int GetPoints()
         {
             return pointsAmount;

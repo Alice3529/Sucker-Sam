@@ -22,7 +22,17 @@ public class Pathfinding : MonoBehaviour
     public event Action<List<Transform>> newPath;
     EnemyAI1 enemy;
     bool con = true;
+    List<Transform> lockCellsTransform=new List<Transform>();
 
+    void Awake()
+    {
+        GetComponent<EnemyAI1>().lockFull += IsLocked;
+    }
+
+    public void IsLocked(List<Transform> cellsToLock )
+    {
+        lockCellsTransform = cellsToLock;
+    }
     public Transform GetGrid()
     {
         return grid;
@@ -150,7 +160,7 @@ public class Pathfinding : MonoBehaviour
             {
                 Transform neighbour = dic[nearCell].transform;
                 Tile tile = neighbour.gameObject.GetComponent<Tile>();
-                if (!tile.GetIsChecked())
+                if (!tile.GetIsChecked() && !lockCellsTransform.Contains(tile.transform))
                 {
                     tile.SetParent(currentCell.gameObject);
                     if (!tile.IsPatrollingPoint())
