@@ -14,7 +14,6 @@ public class Clyde : MonoBehaviour, IGhostEndPoint
     {
         if (Vector3.Distance(player.position, this.gameObject.transform.position) < distance)
         {
-            print(Vector3.Distance(player.position, this.gameObject.transform.position));
             return ScatterMovementNew(GetComponent<EnemyAI1>().GetPatrollingPath());
         }
         else

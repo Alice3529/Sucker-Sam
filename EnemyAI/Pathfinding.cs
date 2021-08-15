@@ -18,10 +18,8 @@ public class Pathfinding : MonoBehaviour
     Queue<Transform> closeCells = new Queue<Transform>();
     bool isRunning=true;
     [SerializeField] List<Transform> backPath = new List<Transform>();
-    bool pathIsCalculated = false;
     public event Action<List<Transform>> newPath;
     EnemyAI1 enemy;
-    bool con = true;
     List<Transform> lockCellsTransform=new List<Transform>();
 
     void Awake()
@@ -29,10 +27,7 @@ public class Pathfinding : MonoBehaviour
         GetComponent<EnemyAI1>().lockFull += IsLocked;
     }
 
-    public void IsLocked(List<Transform> cellsToLock )
-    {
-        lockCellsTransform = cellsToLock;
-    }
+    #region get and set
     public Transform GetGrid()
     {
         return grid;
@@ -43,15 +38,12 @@ public class Pathfinding : MonoBehaviour
         return dic;
     }
 
-    public void SetIsPathCalculated()
+    public void IsLocked(List<Transform> cellsToLock)
     {
-        pathIsCalculated=false;
+        lockCellsTransform = cellsToLock;
     }
+    #endregion
 
-    public bool IsPathCalculated()
-    {
-        return pathIsCalculated;
-    }
     void Start()
     {
         player = FindObjectOfType<PlayerMovememt>().gameObject;
@@ -62,15 +54,10 @@ public class Pathfinding : MonoBehaviour
 
     public void SearchPath(Transform scatterModePoint)
     {
-        con = true;
         ThrowOffPreviousPath();
         FindStartAndEnd(scatterModePoint);
-        if (con == true)
-        {
-            ColorStartAndEnd();
-            EnemyPathfinding();
-        }
-      
+        ColorStartAndEnd();
+        EnemyPathfinding();
     }
 
 
@@ -118,8 +105,6 @@ public class Pathfinding : MonoBehaviour
 
                 }
             }
-
-
             startPoint.GetComponent<Tile>().SetIsChecked(true);
             maxDistance = 1000f;
             maxDistance1 = 1000f;
@@ -129,15 +114,16 @@ public class Pathfinding : MonoBehaviour
     private void ColorStartAndEnd()
     {
         closeCells.Enqueue(startPoint.transform);
-        if (!startPoint.GetComponent<Tile>().IsPatrollingPoint())
-        {
-            startPoint.GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f);
-        }
-        if (!endPoint.GetComponent<Tile>().IsPatrollingPoint())
-        {
-            endPoint.GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f);
-        }
+        Color(startPoint);
+        Color(endPoint);
+    }
 
+    void Color(GameObject pointToColor)
+    {
+        if (!pointToColor.GetComponent<Tile>().IsPatrollingPoint())
+        {
+            pointToColor.GetComponent<SpriteRenderer>().color = new Color(0f, 0f, 0f);
+        }
     }
 
     private void EnemyPathfinding()
@@ -147,7 +133,7 @@ public class Pathfinding : MonoBehaviour
              var searchCenter = closeCells.Dequeue();
              StopIfTheEndFound(searchCenter);
              ExploreNeighbours(searchCenter);
-           
+
         }
     }
 
@@ -162,6 +148,7 @@ public class Pathfinding : MonoBehaviour
                 Tile tile = neighbour.gameObject.GetComponent<Tile>();
                 if (!tile.GetIsChecked() && !lockCellsTransform.Contains(tile.transform))
                 {
+                    print(tile.gameObject.name);
                     tile.SetParent(currentCell.gameObject);
                     if (!tile.IsPatrollingPoint())
                     {
@@ -208,7 +195,6 @@ public class Pathfinding : MonoBehaviour
         {
             FrightenedMode(startPoint.transform);
         }
-        pathIsCalculated = true;
     }
 
     private void FrightenedMode(Transform currentCell)

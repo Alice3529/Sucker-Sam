@@ -17,7 +17,7 @@ namespace _Scripts.Player.CollisionActions
 
         private void OnCollisionWithCollectable(Enemy.Enemy enemy)
         {
-            if (!_playerMovement.IsPoweredUp)
+            if (!_playerMovement.IsPoweredUp || !enemy.GetComponent<EnemyAI1>().IsInFrightenedMode())
             {
                 _playerMovement.KilledBy(enemy);
                 return;
