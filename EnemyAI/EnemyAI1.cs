@@ -273,21 +273,29 @@ public class EnemyAI1 : MonoBehaviour
             col.gameObject.GetComponent<PlayerHealth>().MinusHealth(damageForPlayer);
             player.Respawn(); //just calling this, player itself have setting where to respawn
             StartCoroutine("ChangeState");
-            ThrowOffSettings(false);
-            transform.position = waitDotsTransform[0].position;
-            if (gameObject.tag != "blinky")
-            {
-                startCurrent = 1;
-                scatterPointNumber = 1;
+            EnemyAI1[] enemies = FindObjectsOfType<EnemyAI1>();
+            foreach (EnemyAI1 enemy in enemies) {
+                enemy.StartAgain();
             }
-            else
-            {
-                startCurrent = 0;
-                scatterPointNumber = 0;
-            }
-            StartCoroutine(Wait());
 
         }
+    }
+
+     void StartAgain()
+    {
+        ThrowOffSettings(false);
+        transform.position = waitDotsTransform[0].position;
+        if (gameObject.tag != "blinky")
+        {
+            startCurrent = 1;
+            scatterPointNumber = 1;
+        }
+        else
+        {
+            startCurrent = 0;
+            scatterPointNumber = 0;
+        }
+        StartCoroutine(Wait());
     }
 
 
@@ -302,7 +310,10 @@ public class EnemyAI1 : MonoBehaviour
         GetComponent<Pathfinding>().SearchPath(waitDotsTransform[startCurrent]);
         canMove = true;
         yield return new WaitForSeconds(timeAfterStartForEnemy);
-        FindObjectOfType<wall>().SetTime();
+        if (gameObject.tag != "blinky")
+        {
+            FindObjectOfType<wall>().SetTime();
+        }
         waitMode = false;
         if (scatterMode == true)
         {

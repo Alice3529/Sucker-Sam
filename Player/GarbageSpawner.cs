@@ -112,7 +112,7 @@ public class GarbageSpawner : MonoBehaviour
        var allHits = Physics2D.OverlapCircleAll(centralPoint, wallDetectionRadius);
        foreach (var rhit in allHits)
         {
-            if (rhit.gameObject.tag == "wall")
+            if (rhit.gameObject.tag == "wall" || rhit.gameObject.tag == "inwall")
             {
                 wallsCollision.Add(rhit.gameObject);
             }
