@@ -50,7 +50,6 @@ namespace _Scripts.Player
         void SearchRightAndLeftColliders()
         {
             collidersRL = Physics2D.OverlapBoxAll(transform.position, overlapWallsRL, 90, mask);//collider
-            print(collidersRL.Length);                                                                                                                 //for
             foreach (Collider2D col in collidersRL)
             {
                 if (colliders.Contains(col)) { return; }
