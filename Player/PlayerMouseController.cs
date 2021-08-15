@@ -34,6 +34,7 @@ namespace _Scripts.Player
         // Update is called once per frame
         void FixedUpdate()
         {
+            int[] wallsDirections = FindObjectOfType<SearchWalls>().GetDirections();//l,r,u,b
             if (!Input.GetMouseButtonDown(0)) return; 
             lastMousePosition = Input.mousePosition;
 
@@ -45,17 +46,21 @@ namespace _Scripts.Player
 
             if (Math.Abs(distance.x) > Math.Abs(distance.y))
             {
-                if (distance.x > 0) 
+                if (distance.x > 0 && (wallsDirections[1] != 1)) 
                     _playerMovement.MoveRight();
-                else
+                else if (distance.x<=0 && (wallsDirections[0] != 1))
                     _playerMovement.MoveLeft();
             }
             else
             {
-                if(distance.y<0)
+                if ((distance.y < 0) && (wallsDirections[3] != 1))
+                {
                     _playerMovement.MoveDown();
-                else
+                }
+                else if ((distance.y > 0) && (wallsDirections[2] != 1))
+                {
                     _playerMovement.MoveUp();
+                }
             }
             
             //if (Math.Abs(distance.magnitude) < 10)
