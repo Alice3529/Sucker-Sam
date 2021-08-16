@@ -151,6 +151,12 @@ namespace _Scripts.Player
             OnIsPoweredUpChanged?.Invoke(IsPoweredUp, TimeToDismissPowerUp);
         }
 
+        public void SetTime()
+        {
+            if (modifier == null) return;
+            print(25);
+            modifier.TimeToExpire = 0f;
+        }
 
         private void CalcIfNeedsTurn()
         {

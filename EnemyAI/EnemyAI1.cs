@@ -36,11 +36,11 @@ public class EnemyAI1 : MonoBehaviour
     [SerializeField] float timerInFrightened = 5f;
     [SerializeField] GameObject light;
     [SerializeField] bool canMove = true;
-    public bool inCage=true;
-    string cellPinkyStart="2,5";
+    [SerializeField] bool inCage = true;
+    string cellPinkyStart = "2,5";
     [SerializeField] Vector2 enemyCoords;
     List<string> lockCells = new List<string>() { "1,7", "2,7" };
-    [SerializeField] List<Transform> lockCellsTransform=new List<Transform>();
+    [SerializeField] List<Transform> lockCellsTransform = new List<Transform>();
     public event Action<List<Transform>> lockFull;
 
     #region get 
@@ -66,6 +66,11 @@ public class EnemyAI1 : MonoBehaviour
     }
     #endregion
     #region get mode and set mode
+
+    public bool GetInCage()
+    {
+        return inCage;
+    }
     public bool IsInFrightenedMode()
     {
         return frightenedMode;
@@ -113,20 +118,21 @@ public class EnemyAI1 : MonoBehaviour
     public void SetFrightenedMode()
     {
         frightenedMode = true;
+        light.SetActive(true);
         if (!inCage)
         {
             timerInFrightened = player.GetComponent<PlayerCollisionDetector>().GetPowerupTime();
-            light.SetActive(true);
             scatterMode = false;
             currentPath = null;
             chasingMode = false;
             GetComponent<Pathfinding>().SearchPath(null);
         }
-     }
+    }
 
-       
+
     void Update()
     {
+       // print($"{inCage}" + gameObject.name);
         if (canMove)
         {
             Timers();
@@ -140,7 +146,7 @@ public class EnemyAI1 : MonoBehaviour
         {
             Timer();
         }
-        else if (frightenedMode && inCage==false)
+        else if (frightenedMode && inCage == false)
         {
             TimerInFrightened();
         }
@@ -152,6 +158,10 @@ public class EnemyAI1 : MonoBehaviour
         {
             scatterMode = false;
             ChasingMovement(currentPath);
+        }
+        else if (chasingMode && currentPath.Count == 0)
+        {
+            GetComponent<Pathfinding>().SearchPath(null);
         }
         else if (currentPath.Count != 0 && scatterMode)
         {
@@ -165,53 +175,53 @@ public class EnemyAI1 : MonoBehaviour
         }
 
     }
-       
+
     void ChasingMovement(List<Transform> startWaypoints)
     {
-            if (transform.position != new Vector3(startWaypoints[0].position.x, startWaypoints[0].position.y, 0) && currentPath.Count != 0)
-            {
-                Vector2 pos = Vector2.MoveTowards(transform.position, startWaypoints[0].position, enemySpeed * Time.deltaTime);
-                pos = new Vector3(pos.x, pos.y, 0);
-                transform.position = pos;
-            } 
-            else
-            {
-                enemyCoords = new Vector2(startWaypoints[0].position.x, startWaypoints[0].position.y);
-                GetComponent<Pathfinding>().SearchPath(null);
-            }
+        if (transform.position != new Vector3(startWaypoints[0].position.x, startWaypoints[0].position.y, 0) && currentPath.Count != 0)
+        {
+            Vector2 pos = Vector2.MoveTowards(transform.position, startWaypoints[0].position, enemySpeed * Time.deltaTime);
+            pos = new Vector3(pos.x, pos.y, 0);
+            transform.position = pos;
+        }
+        else
+        {
+            enemyCoords = new Vector2(startWaypoints[0].position.x, startWaypoints[0].position.y);
+            GetComponent<Pathfinding>().SearchPath(null);
+        }
     }
 
     void ScatterMovement(List<Transform> startWaypoints)
+    {
+        if (transform.position != new Vector3(startWaypoints[startCurrent].position.x, startWaypoints[startCurrent].position.y, 0))
         {
-            if (transform.position != new Vector3(startWaypoints[startCurrent].position.x, startWaypoints[startCurrent].position.y, 0)) 
-            {
-                Vector2 pos = Vector2.MoveTowards(transform.position, startWaypoints[startCurrent].position, enemySpeed * Time.deltaTime);
-                pos = new Vector3(pos.x, pos.y, 0);
-                transform.position = pos;
+            Vector2 pos = Vector2.MoveTowards(transform.position, startWaypoints[startCurrent].position, enemySpeed * Time.deltaTime);
+            pos = new Vector3(pos.x, pos.y, 0);
+            transform.position = pos;
 
+        }
+        else
+        {
+            enemyCoords = new Vector2(startWaypoints[startCurrent].position.x, startWaypoints[startCurrent].position.y);
+
+            if (startCurrent != (startWaypoints.Count - 1))
+            {
+                startCurrent = startCurrent + 1;
+            }
+            else
+
+                if (!waitMode)
+            {
+                scatterPointNumber = (scatterPointNumber + 1) % pathDotsTransform.Count;
+                GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
             }
             else
             {
-                enemyCoords = new Vector2(startWaypoints[startCurrent].position.x, startWaypoints[startCurrent].position.y);
-                
-                if (startCurrent != (startWaypoints.Count - 1))
-                {
-                      startCurrent = startCurrent + 1;
-                }
-                else
-
-                    if (!waitMode)
-                    {
-                       scatterPointNumber = (scatterPointNumber + 1) % pathDotsTransform.Count;
-                       GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
-                    }
-                    else 
-                    {
-                       scatterPointNumber = (scatterPointNumber + 1) % waitDotsTransform.Count;
-                       GetComponent<Pathfinding>().SearchPath(waitDotsTransform[scatterPointNumber]);
-                    }
-                }
+                scatterPointNumber = (scatterPointNumber + 1) % waitDotsTransform.Count;
+                GetComponent<Pathfinding>().SearchPath(waitDotsTransform[scatterPointNumber]);
             }
+        }
+    }
 
     void Timer()
     {
@@ -244,20 +254,21 @@ public class EnemyAI1 : MonoBehaviour
         }
     }
     void ChangeEnemyMode()
+    {
+        if (chasingMode == true)
         {
-            if (chasingMode == true)
-            {
-              SetOppositeMode();
-              scatterPointNumber = 0;
-              GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
-            }
-            else
-            {
-               SetOppositeMode();
-               scatterPointNumber = 0;
-               GetComponent<Pathfinding>().SearchPath(null);
-            }
+            SetOppositeMode();
+            scatterPointNumber = 0;
+            GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
         }
+        else
+        {
+            SetOppositeMode();
+            scatterPointNumber = 0;
+            startCurrent = 0;
+            GetComponent<Pathfinding>().SearchPath(null);
+        }
+    }
 
     void SetOppositeMode()
     {
@@ -266,140 +277,136 @@ public class EnemyAI1 : MonoBehaviour
         currentPath = null;
     }
 
-    void OnCollisionStay2D(Collision2D col)
+    public void StartAgain()
     {
-        if (col.gameObject.GetComponent<Points>())
+            StopAllCoroutines();
+            ThrowOffSettings(false);
+            GetComponent<BoxCollider2D>().enabled = true;
+            GetComponent<SpriteRenderer>().enabled = true;
+        transform.position = waitDotsTransform[0].position;
+            inCage = true;
+            if (gameObject.tag != "blinky")
+            {
+                startCurrent = 1;
+                scatterPointNumber = 1;
+            }
+            else
+            {
+                startCurrent = 0;
+                scatterPointNumber = 0;
+            }
+            StartCoroutine(Wait());
+        }
+
+
+        IEnumerator ChangeState()
         {
-            col.gameObject.GetComponent<PlayerHealth>().MinusHealth(damageForPlayer);
-            player.Respawn(); //just calling this, player itself have setting where to respawn
-            StartCoroutine("ChangeState");
-            EnemyAI1[] enemies = FindObjectsOfType<EnemyAI1>();
-            foreach (EnemyAI1 enemy in enemies) {
-                enemy.StartAgain();
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        IEnumerator Wait()
+        {
+            waitMode = true;
+            GetComponent<Pathfinding>().SearchPath(waitDotsTransform[startCurrent]);
+            canMove = true;
+            yield return new WaitForSeconds(timeAfterStartForEnemy);
+            if (gameObject.tag != "blinky")
+            {
+                FindObjectOfType<wall>().SetTime();
+            }
+            waitMode = false;
+            if (scatterMode == true)
+            {
+                currentPath = null;
+                GetComponent<Pathfinding>().SearchPath(pathDotsTransform[0]);
+            }
+        }
+
+        public void AppearAgain()
+        {
+            ThrowOffSettings(true);
+            if (gameObject.tag != "blinky")
+            {
+                transform.position = new Vector3(waitDotsTransform[0].position.x, waitDotsTransform[0].position.y, 0);
+            }
+            else
+            {
+                GameObject rdot = GameObject.Find(cellPinkyStart);
+                transform.position = rdot.transform.position;
+            }
+            StartCoroutine(WaitForAppear());
+        }
+
+        IEnumerator WaitForAppear()
+        {
+            yield return new WaitForSeconds(1f);
+            SetSettings();
+        }
+
+        void SetSettings()
+        {
+            GetComponent<BoxCollider2D>().enabled = true;
+            GetComponent<SpriteRenderer>().enabled = true;
+            GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
+            FindObjectOfType<wall>().SetTime();
+            scatterMode = true;
+            waitMode = false;
+            canMove = true;
+        }
+
+        void ThrowOffSettings(bool turnoff)
+        {
+            inCage = true;
+
+            canMove = false;
+            if (turnoff)
+            {
+                print(26);
+                GetComponent<BoxCollider2D>().enabled = false;
+                GetComponent<SpriteRenderer>().enabled = false;
+            }
+            lockCellsTransform.Clear();
+            lockFull(lockCellsTransform);
+            light.SetActive(false);
+            waitMode = true;
+            currentPath = null;
+            chasingMode = false;
+            scatterMode = true;
+            frightenedMode = false;
+            currentTime = 0f;
+            print(inCage);
+             tr = 0;
+
+        }
+
+        void OnTriggerEnter2D(Collider2D col)
+        {
+            print(col.gameObject.name);
+            if (col.gameObject.tag == "cageWall")
+            {
+                LockCells();
+                print(gameObject.name);
+                inCage = false;
+                if (frightenedMode)
+                {
+                    SetFrightenedMode();
+                }
             }
 
         }
-    }
 
-     void StartAgain()
-    {
-        ThrowOffSettings(false);
-        transform.position = waitDotsTransform[0].position;
-        if (gameObject.tag != "blinky")
+        void LockCells()
         {
-            startCurrent = 1;
-            scatterPointNumber = 1;
-        }
-        else
-        {
-            startCurrent = 0;
-            scatterPointNumber = 0;
-        }
-        StartCoroutine(Wait());
-    }
-
-
-    IEnumerator ChangeState()
-    {
-        yield return new WaitForSeconds(0.05f);
-    }
-
-    IEnumerator Wait()
-    {
-        waitMode = true;
-        GetComponent<Pathfinding>().SearchPath(waitDotsTransform[startCurrent]);
-        canMove = true;
-        yield return new WaitForSeconds(timeAfterStartForEnemy);
-        if (gameObject.tag != "blinky")
-        {
-            FindObjectOfType<wall>().SetTime();
-        }
-        waitMode = false;
-        if (scatterMode == true)
-        {
-            currentPath = null;
-            GetComponent<Pathfinding>().SearchPath(pathDotsTransform[0]);
+            foreach (string cell in lockCells)
+            {
+                Transform lockCell = GameObject.Find(cell).transform;
+                if (lockCellsTransform.Contains(lockCell)) { return; }
+                lockCellsTransform.Add(lockCell);
+            }
+            lockFull(lockCellsTransform);
         }
     }
 
-     public void AppearAgain()
-    {
-        ThrowOffSettings(true);
-        if (gameObject.tag != "blinky")
-        {
-            transform.position = new Vector3(waitDotsTransform[0].position.x, waitDotsTransform[0].position.y, 0);
-        }
-        else
-        {
-            GameObject rdot = GameObject.Find(cellPinkyStart);
-            transform.position = rdot.transform.position;
-        }
-        StartCoroutine(WaitForAppear());
-    }
-
-    IEnumerator WaitForAppear()
-    {
-        yield return new WaitForSeconds(1f);
-        SetSettings();
-    }
-
-    void SetSettings()
-    {
-        GetComponent<BoxCollider2D>().enabled = true;
-        GetComponent<SpriteRenderer>().enabled = true;
-        GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
-        FindObjectOfType<wall>().SetTime();
-        scatterMode = true;
-        waitMode = false;
-        canMove = true;
-    }
-
-    void ThrowOffSettings(bool turnoff)
-    {
-        canMove = false;
-        inCage = true;
-        if (turnoff)
-        {
-            GetComponent<BoxCollider2D>().enabled = false;
-            GetComponent<SpriteRenderer>().enabled = false;
-        }
-        lockCellsTransform.Clear();
-        lockFull(lockCellsTransform);
-        light.SetActive(false);
-        waitMode = true;
-        currentPath = null;
-        chasingMode = false;
-        scatterMode = true;
-        frightenedMode = false;
-        currentTime = 0f;
-        tr = 0;
-
-    }
-
-    void OnTriggerExit2D(Collider2D col)
-     {
-          if (col.gameObject.tag == "cageWall")
-          {
-              LockCells();
-              inCage = false;
-              if (frightenedMode)
-              {
-                  SetFrightenedMode();
-              }
-          }
-     }
-
-    void LockCells()
-    {
-        foreach (string cell in lockCells)
-        {
-            Transform lockCell = GameObject.Find(cell).transform;
-            if (lockCellsTransform.Contains(lockCell)) { return; }
-            lockCellsTransform.Add(lockCell);
-        }
-        lockFull(lockCellsTransform);
-    }
- }
 
 
 

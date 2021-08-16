@@ -148,7 +148,6 @@ public class Pathfinding : MonoBehaviour
                 Tile tile = neighbour.gameObject.GetComponent<Tile>();
                 if (!tile.GetIsChecked() && !lockCellsTransform.Contains(tile.transform))
                 {
-                    print(tile.gameObject.name);
                     tile.SetParent(currentCell.gameObject);
                     if (!tile.IsPatrollingPoint())
                     {
@@ -187,7 +186,7 @@ public class Pathfinding : MonoBehaviour
             backPoint = backPoint.GetComponent<Tile>().GetParent();
         }
         backPath.Reverse();
-        if (!enemy.IsInFrightenedMode() || enemy.inCage)
+        if (!enemy.IsInFrightenedMode() || enemy.GetInCage())
         {
             newPath(backPath);
         }

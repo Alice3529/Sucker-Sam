@@ -66,6 +66,7 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         {
             coords -= new Vector2(0, 2);
         }
+        print(look + "look");
         print(coords);
         Dictionary<Vector2, GameObject> dic = GetComponent<Pathfinding>().GetDic();
 

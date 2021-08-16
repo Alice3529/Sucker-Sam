@@ -22,7 +22,11 @@ namespace _Scripts.PowerUpModifiers
 
         public virtual T Apply(T currentValue) => currentValue;
 
-        public bool IsExpired => (stopwatch.ElapsedMilliseconds / 1000f) > expireAfter;
-        public float TimeToExpire => (float) Math.Round(expireAfter - stopwatch.ElapsedMilliseconds / 1000f, 1);
+        public bool IsExpired
+        {
+            get { return (stopwatch.ElapsedMilliseconds / 1000f) > expireAfter; }
+        }
+        public float TimeToExpire { get { return (float)Math.Round(expireAfter - stopwatch.ElapsedMilliseconds / 1000f, 1); }
+            set { expireAfter = (int)value; } }
     }
 }

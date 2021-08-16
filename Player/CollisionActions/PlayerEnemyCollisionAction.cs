@@ -8,26 +8,38 @@ namespace _Scripts.Player.CollisionActions
     {
         private PlayerCollisionDetector _collisionDetector;
         private PlayerMovememt _playerMovement;
+        EnemyAI1[] enemies = new EnemyAI1[4];
         private void Start()
         {
             _collisionDetector = GetComponent<PlayerCollisionDetector>();
             _playerMovement = GetComponent<PlayerMovememt>();
             _collisionDetector.OnCollisionWithEnemy += OnCollisionWithCollectable;
+            enemies = FindObjectsOfType<EnemyAI1>();
+
         }
 
         private void OnCollisionWithCollectable(Enemy.Enemy enemy)
         {
-            if (!_playerMovement.IsPoweredUp || !enemy.GetComponent<EnemyAI1>().IsInFrightenedMode())
+            if (enemy.GetComponent<EnemyAI1>().IsInFrightenedMode())
             {
-                _playerMovement.KilledBy(enemy);
-                return;
+                enemy.GetComponent<EnemyAI1>().AppearAgain();
+                GetComponent<Points>().AddPoints(enemy.Points);
+                _playerMovement.ConsumedEnemy(enemy);
             }
-            
-            GetComponent<Points>().AddPoints(enemy.Points);
-            _playerMovement.ConsumedEnemy(enemy);
-            enemy.GetComponent<EnemyAI1>().AppearAgain();
-            //Destroy(enemy.gameObject);
+            else
+            {
+                foreach (EnemyAI1 enemyAI in enemies)
+                {
+                    print(35);
+                    enemyAI.StartAgain();
+                }
+                GetComponent<PlayerMovememt>().Respawn();
+                GetComponent<PlayerHealth>().MinusHealth(1);
+                _playerMovement.SetTime();
+               // _playerMovement.KilledBy(enemy);
+               
 
+            }
         }
     }
 }

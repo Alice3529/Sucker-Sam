@@ -5,7 +5,6 @@ namespace _Scripts.Player
         void Initialize(T currentValue);
         T Apply(T currentValue);
         bool IsExpired { get; }
-        
-        float TimeToExpire { get; }
+        float TimeToExpire { get; set; }
     }
 }

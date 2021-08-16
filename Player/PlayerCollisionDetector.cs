@@ -15,7 +15,7 @@ namespace _Scripts.Player
         float powerupTime=0f;
         //public Action<
 
-        private void OnCollisionEnter2D(Collision2D other)
+        private void OnCollisionStay2D(Collision2D other)
         {
             detectCollisionAndRaiseEvents(other.gameObject);
         }
