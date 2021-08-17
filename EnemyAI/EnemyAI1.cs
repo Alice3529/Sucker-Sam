@@ -39,7 +39,7 @@ public class EnemyAI1 : MonoBehaviour
     [SerializeField] bool inCage = true;
     string cellPinkyStart = "2,5";
     [SerializeField] Vector2 enemyCoords;
-    List<string> lockCells = new List<string>() { "1,7", "2,7" };
+    List<string> lockCells = new List<string>() { "1,7", "2,7", "0,6", "0,5", "1,6", "1,5", "2,6", "2,5", "3,6", "3,5", "4,6", "4,5" };
     [SerializeField] List<Transform> lockCellsTransform = new List<Transform>();
     public event Action<List<Transform>> lockFull;
 
@@ -132,7 +132,6 @@ public class EnemyAI1 : MonoBehaviour
 
     void Update()
     {
-       // print($"{inCage}" + gameObject.name);
         if (canMove)
         {
             Timers();
@@ -283,7 +282,7 @@ public class EnemyAI1 : MonoBehaviour
             ThrowOffSettings(false);
             GetComponent<BoxCollider2D>().enabled = true;
             GetComponent<SpriteRenderer>().enabled = true;
-        transform.position = waitDotsTransform[0].position;
+            transform.position = waitDotsTransform[0].position;
             inCage = true;
             if (gameObject.tag != "blinky")
             {
@@ -307,12 +306,17 @@ public class EnemyAI1 : MonoBehaviour
         IEnumerator Wait()
         {
             waitMode = true;
-            GetComponent<Pathfinding>().SearchPath(waitDotsTransform[startCurrent]);
+            inCage = true;
+             GetComponent<Pathfinding>().SearchPath(waitDotsTransform[startCurrent]);
             canMove = true;
             yield return new WaitForSeconds(timeAfterStartForEnemy);
             if (gameObject.tag != "blinky")
             {
                 FindObjectOfType<wall>().SetTime();
+            }
+            else
+            {
+                inCage = false;
             }
             waitMode = false;
             if (scatterMode == true)
@@ -345,6 +349,7 @@ public class EnemyAI1 : MonoBehaviour
 
         void SetSettings()
         {
+            inCage = true;
             GetComponent<BoxCollider2D>().enabled = true;
             GetComponent<SpriteRenderer>().enabled = true;
             GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
@@ -361,7 +366,6 @@ public class EnemyAI1 : MonoBehaviour
             canMove = false;
             if (turnoff)
             {
-                print(26);
                 GetComponent<BoxCollider2D>().enabled = false;
                 GetComponent<SpriteRenderer>().enabled = false;
             }
@@ -374,18 +378,15 @@ public class EnemyAI1 : MonoBehaviour
             scatterMode = true;
             frightenedMode = false;
             currentTime = 0f;
-            print(inCage);
              tr = 0;
 
         }
 
-        void OnTriggerEnter2D(Collider2D col)
+        void OnTriggerExit2D(Collider2D col)
         {
-            print(col.gameObject.name);
             if (col.gameObject.tag == "cageWall")
             {
                 LockCells();
-                print(gameObject.name);
                 inCage = false;
                 if (frightenedMode)
                 {
