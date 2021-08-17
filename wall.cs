@@ -16,12 +16,10 @@ public class wall : MonoBehaviour
     IEnumerator Time()
     {
         GetComponent<SpriteRenderer>().enabled = false;
-        GetComponent<BoxCollider2D>().enabled = false;
         wallBotom.SetActive(false);
         yield return new WaitForSeconds(timeToWait);
         wallBotom.SetActive(true);
         GetComponent<SpriteRenderer>().enabled = true;
-        GetComponent<BoxCollider2D>().enabled = true;
 
     }
 }
