@@ -9,10 +9,11 @@ public class Clyde : MonoBehaviour, IGhostEndPoint
 {
     [SerializeField] float distance;
     int startCurrent=0;
+    bool canChase = true;
 
     public GameObject FindEndPointInChaseMode(Transform cell, float maxDistance1, Transform player)
     {
-        if (Vector3.Distance(player.position, this.gameObject.transform.position) < distance)
+        if ((Vector3.Distance(player.position, this.gameObject.transform.position) > distance) )
         {
             return ScatterMovementNew(GetComponent<EnemyAI1>().GetPatrollingPath());
         }
@@ -43,9 +44,4 @@ public class Clyde : MonoBehaviour, IGhostEndPoint
         return startWaypoints[startCurrent].gameObject;
     }
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, distance);
-    }
 }
