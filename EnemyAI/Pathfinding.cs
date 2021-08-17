@@ -21,6 +21,9 @@ public class Pathfinding : MonoBehaviour
     public event Action<List<Transform>> newPath;
     EnemyAI1 enemy;
     List<Transform> lockCellsTransform=new List<Transform>();
+    [SerializeField] List<Transform> neighboursNear = new List<Transform>();
+    [SerializeField] float distanceToRun = 0.3f;
+
 
     void Awake()
     {
@@ -114,11 +117,11 @@ public class Pathfinding : MonoBehaviour
     private void ColorStartAndEnd()
     {
         closeCells.Enqueue(startPoint.transform);
-        Color(startPoint);
-        Color(endPoint);
+        ColorTile(startPoint);
+        ColorTile(endPoint);
     }
 
-    void Color(GameObject pointToColor)
+    void ColorTile(GameObject pointToColor)
     {
         if (!pointToColor.GetComponent<Tile>().IsPatrollingPoint())
         {
@@ -140,13 +143,13 @@ public class Pathfinding : MonoBehaviour
     private void ExploreNeighbours(Transform currentCell)
     {
         foreach (Vector2 direction in directions)
-        {
+        { 
             Vector2 nearCell = new Vector2(currentCell.position.x, currentCell.position.y) + direction;
             if (dic.ContainsKey(nearCell))
             {
                 Transform neighbour = dic[nearCell].transform;
                 Tile tile = neighbour.gameObject.GetComponent<Tile>();
-                if (!tile.GetIsChecked() && !lockCellsTransform.Contains(tile.transform))
+                if (!tile.GetIsChecked())
                 {
                     tile.SetParent(currentCell.gameObject);
                     if (!tile.IsPatrollingPoint())
@@ -198,26 +201,48 @@ public class Pathfinding : MonoBehaviour
 
     private void FrightenedMode(Transform currentCell)
     {
-        float distance = 0;
-        Transform neighbourToAdd=null;
+        float distance = 0f;
+        Transform neighbourToAdd = null;
+        int count = 0;
         foreach (Vector2 direction in directions)
         {
             Vector2 nearCell = new Vector2(currentCell.position.x, currentCell.position.y) + direction;
-            if (dic.ContainsKey(nearCell) && (nearCell != new Vector2(backPath[0].transform.position.x, backPath[0].transform.position.y)))
+            if (dic.ContainsKey(nearCell))
             {
+                count += 1;
+            }
+        }
+        print(count + "Count");
+        if ((count > 2) || (Vector3.Distance(currentCell.position, endPoint.transform.position)<=distanceToRun))
+        {
+            neighboursNear.Clear();
+        }
+       
+
+        foreach (Vector2 direction in directions)
+        {
+            Vector2 nearCell = new Vector2(currentCell.position.x, currentCell.position.y) + direction;
+            print(nearCell+"Near");
+            if (dic.ContainsKey(nearCell))
+            {
+                print(nearCell);
                 Transform neighbour = dic[nearCell].transform;
-                if (Vector3.Distance(neighbour.transform.position, endPoint.transform.position) > distance)
+                if ((Vector3.Distance(neighbour.transform.position, endPoint.transform.position) >= distance)
+                  && (!lockCellsTransform.Contains(neighbour)) && !neighboursNear.Contains(neighbour))
                 {
                     distance = Vector3.Distance(neighbour.transform.position, endPoint.transform.position);
                     neighbourToAdd = neighbour;
                 }
+
             }
+
         }
         backPath.Clear();
         backPath.Add(neighbourToAdd);
+        neighboursNear.Add(currentCell);
         newPath(backPath);
-
     }
+    
 
     public List<Transform> GetBackPath()
     {
@@ -229,4 +254,12 @@ public class Pathfinding : MonoBehaviour
         maxDistance1=distance;
     }
 
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+    //    Gizmos.DrawWireSphere(player.transform.position, distanceToRun);
+
+    }
 }
+
