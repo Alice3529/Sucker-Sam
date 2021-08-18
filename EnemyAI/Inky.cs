@@ -66,24 +66,14 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         {
             coords -= new Vector2(0, 2);
         }
-        print(look + "look");
-        print(coords);
         Dictionary<Vector2, GameObject> dic = GetComponent<Pathfinding>().GetDic();
 
         if (dic.ContainsKey(coords))
         {
             return dic[coords];
         }
-        else
-        {
-            coords=FindClosestPoint(coords);
-            print(coords + "Coords");
-            if (dic.ContainsKey(coords))
-            {
-                return dic[coords];
-            }
-        }
-        return null;
+        return cell.gameObject;
+      
     }
 
     private void GetPlayerRotation(Transform player)
@@ -128,60 +118,7 @@ public class Inky : MonoBehaviour, IGhostEndPoint
         {
             return dic[newPoint];
         }
-        else
-        {
-            if (newPoint.x > corners[1].x && newPoint.y>corners[1].y)
-            {
-                newPoint = new Vector2(corners[1].x, corners[1].y);
-            }
-            else if (newPoint.x < corners[0].x && newPoint.y < corners[0].y)
-            {
-                newPoint = new Vector2(corners[0].x, corners[0].y);
-            }
-            else if (newPoint.x > corners[1].x && newPoint.y < corners[0].y)
-            {
-                newPoint = new Vector2(corners[1].x, corners[0].y);
-            }
-            else if (newPoint.x < corners[0].x && newPoint.y > corners[1].y)
-            {
-                newPoint = new Vector2(corners[0].x, corners[1].y);
-            }
-            else if (newPoint.x < corners[0].x)
-            {
-                newPoint = new Vector2(corners[0].x, newPoint.y);
-                print(newPoint + "T");
-            }
-            else if (newPoint.x > corners[1].x)
-            {
-                newPoint = new Vector2(corners[1].x, newPoint.y);
-                print(newPoint + "T");
-            }
-            else if (newPoint.y > corners[1].y)
-            {
-                newPoint = new Vector2(newPoint.x, corners[1].y);
-                print(newPoint + "T");
-            }
-            else if (newPoint.y < corners[0].y)
-            {
-                newPoint = new Vector2(newPoint.y, corners[0].y);
-            }
-
-            if (dic.ContainsKey(newPoint))
-            {
-                return dic[newPoint];
-            }
-            else
-            {
-                newPoint = FindClosestPoint(newPoint);
-                if (dic.ContainsKey(newPoint))
-                {
-                    return dic[newPoint];
-
-                }
-            }
-            
-        }
-        return null;
+        return cell;
        
     }
 

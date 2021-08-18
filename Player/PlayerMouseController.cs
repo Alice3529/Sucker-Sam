@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 
 namespace _Scripts.Player
 {
@@ -34,6 +35,7 @@ namespace _Scripts.Player
         // Update is called once per frame
         void FixedUpdate()
         {
+            if (EventSystem.current.IsPointerOverGameObject()) { return; }
             int[] wallsDirections = FindObjectOfType<SearchWalls>().GetDirections();//l,r,u,b
             if (!Input.GetMouseButtonDown(0)) return; 
             lastMousePosition = Input.mousePosition;

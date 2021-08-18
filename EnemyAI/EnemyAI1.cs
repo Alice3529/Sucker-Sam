@@ -20,14 +20,14 @@ public class EnemyAI1 : MonoBehaviour
     [SerializeField] float timeToWait = 2f;
     Pathfinding pathfinding;
     [SerializeField] GameObject grid;
-    [SerializeField] List<Transform> currentPath = new List<Transform>();
+    List<Transform> currentPath = new List<Transform>();
     [SerializeField] List<string> patrollingPathDots = new List<string>();
     List<Transform> pathDotsTransform = new List<Transform>();
     [SerializeField] List<string> waitPathDots = new List<string>();
     List<Transform> waitDotsTransform = new List<Transform>();
-    [SerializeField] bool waitMode = true;
-    [SerializeField] bool chasingMode = false;
-    [SerializeField] bool scatterMode = true;
+    bool waitMode = true;
+    bool chasingMode = false;
+    bool scatterMode = true;
     [SerializeField] bool frightenedMode = false;
     int scatterPointNumber = 0;
     [SerializeField] float currentTime = 0f;
@@ -35,12 +35,12 @@ public class EnemyAI1 : MonoBehaviour
     [SerializeField] List<float> timeModes = new List<float>() { 20f, 27f, 47f, 54f, 59f };
     [SerializeField] float timerInFrightened = 5f;
     [SerializeField] GameObject light;
-    [SerializeField] bool canMove = true;
+    bool canMove = true;
     [SerializeField] bool inCage = true;
     string cellPinkyStart = "2,5";
-    [SerializeField] Vector2 enemyCoords;
-    List<string> lockCells = new List<string>() { "1,7", "2,7", "0,6", "0,5", "1,6", "1,5", "2,6", "2,5", "3,6", "3,5", "4,6", "4,5" };
-    [SerializeField] List<Transform> lockCellsTransform = new List<Transform>();
+    Vector2 enemyCoords;
+    List<string> lockCells = new List<string>() {"1,8","2,8", "1,7", "2,7", "0,6", "0,5", "1,6", "1,5", "2,6", "2,5", "3,6", "3,5", "4,6", "4,5" };
+    List<Transform> lockCellsTransform = new List<Transform>();
     public event Action<List<Transform>> lockFull;
 
     #region get 
@@ -118,6 +118,7 @@ public class EnemyAI1 : MonoBehaviour
     public void SetFrightenedMode()
     {
         frightenedMode = true;
+        pathfinding.neighboursNear.Clear();
         light.SetActive(true);
         if (!inCage)
         {
@@ -171,6 +172,10 @@ public class EnemyAI1 : MonoBehaviour
         {
             if (light.active == false) { light.SetActive(true); }
             ChasingMovement(currentPath);
+        }
+        else if (frightenedMode==false && light.active == true)
+        {
+            light.SetActive(false);
         }
 
     }
@@ -382,7 +387,7 @@ public class EnemyAI1 : MonoBehaviour
 
         }
 
-        void OnTriggerExit2D(Collider2D col)
+        void OnTriggerEnter2D(Collider2D col)
         {
             if (col.gameObject.tag == "cageWall")
             {

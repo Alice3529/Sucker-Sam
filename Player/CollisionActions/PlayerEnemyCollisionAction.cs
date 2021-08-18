@@ -30,7 +30,6 @@ namespace _Scripts.Player.CollisionActions
             {
                 foreach (EnemyAI1 enemyAI in enemies)
                 {
-                    print(35);
                     enemyAI.StartAgain();
                 }
                 GetComponent<PlayerMovememt>().Respawn();

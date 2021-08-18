@@ -21,7 +21,7 @@ public class Pathfinding : MonoBehaviour
     public event Action<List<Transform>> newPath;
     EnemyAI1 enemy;
     List<Transform> lockCellsTransform=new List<Transform>();
-    [SerializeField] List<Transform> neighboursNear = new List<Transform>();
+    public List<Transform> neighboursNear = new List<Transform>();
     [SerializeField] float distanceToRun = 0.3f;
 
 
@@ -212,7 +212,6 @@ public class Pathfinding : MonoBehaviour
                 count += 1;
             }
         }
-        print(count + "Count");
         if ((count > 2) || (Vector3.Distance(currentCell.position, endPoint.transform.position)<=distanceToRun))
         {
             neighboursNear.Clear();
@@ -222,10 +221,8 @@ public class Pathfinding : MonoBehaviour
         foreach (Vector2 direction in directions)
         {
             Vector2 nearCell = new Vector2(currentCell.position.x, currentCell.position.y) + direction;
-            print(nearCell+"Near");
             if (dic.ContainsKey(nearCell))
             {
-                print(nearCell);
                 Transform neighbour = dic[nearCell].transform;
                 if ((Vector3.Distance(neighbour.transform.position, endPoint.transform.position) >= distance)
                   && (!lockCellsTransform.Contains(neighbour)) && !neighboursNear.Contains(neighbour))
