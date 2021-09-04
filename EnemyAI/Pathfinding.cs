@@ -212,11 +212,10 @@ public class Pathfinding : MonoBehaviour
                 count += 1;
             }
         }
-        if ((count > 2) || (Vector3.Distance(currentCell.position, endPoint.transform.position)<=distanceToRun))
+        if (Vector3.Distance(currentCell.position, endPoint.transform.position) <= distanceToRun)
         {
             neighboursNear.Clear();
         }
-       
 
         foreach (Vector2 direction in directions)
         {
@@ -224,15 +223,20 @@ public class Pathfinding : MonoBehaviour
             if (dic.ContainsKey(nearCell))
             {
                 Transform neighbour = dic[nearCell].transform;
-                if ((Vector3.Distance(neighbour.transform.position, endPoint.transform.position) >= distance)
-                  && (!lockCellsTransform.Contains(neighbour)) && !neighboursNear.Contains(neighbour))
+                if ((!lockCellsTransform.Contains(neighbour)) && !neighboursNear.Contains(neighbour))
                 {
-                    distance = Vector3.Distance(neighbour.transform.position, endPoint.transform.position);
-                    neighbourToAdd = neighbour;
+                    if (Vector3.Distance(neighbour.transform.position, endPoint.transform.position) > distance)
+                    {
+                        distance = Vector3.Distance(neighbour.transform.position, endPoint.transform.position);
+                        neighbourToAdd = neighbour;
+                    }
                 }
 
             }
-
+        }
+        if ((count > 2))
+        {
+            neighboursNear.Clear();
         }
         backPath.Clear();
         backPath.Add(neighbourToAdd);
@@ -251,12 +255,5 @@ public class Pathfinding : MonoBehaviour
         maxDistance1=distance;
     }
 
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(player.transform.position, distanceToRun);
-
-    }
 }
 

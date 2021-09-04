@@ -12,6 +12,7 @@ namespace _Scripts.Canvas_Scripts
         private PlayerHealth _playerHealth;
 
         [SerializeField] private Button PlayButton;
+        [SerializeField] GameObject playerStatistics;
 
         private void Start()
         {
@@ -35,10 +36,17 @@ namespace _Scripts.Canvas_Scripts
             Time.timeScale = 1f;
         }
 
-        public void ShowScreen() => gameObject.SetActive(true);
-        public void HideScreen() => gameObject.SetActive(false);
+        public void ShowScreen() { 
+           gameObject.SetActive(true);
+            playerStatistics.SetActive(false);
+        }
+        public void HideScreen()
+        {
+            gameObject.SetActive(false);
+            playerStatistics.SetActive(true);
+        }
 
-        public void QuitButtonClicked()
+            public void QuitButtonClicked()
         {
             SceneManager.LoadScene(0);
             HideScreen();

@@ -12,7 +12,7 @@ public class EnemyAI1 : MonoBehaviour
     int damageForPlayer = 1;
     int current = 0;
     int startCurrent = 0;
-    public bool IsPatroling;//do not del
+    public bool IsPatroling;
     public PlayerMovememt player;
     private float timeAfterStart = 1.5f;
     [SerializeField] float timeAfterStartForEnemy;
@@ -32,7 +32,7 @@ public class EnemyAI1 : MonoBehaviour
     int scatterPointNumber = 0;
     [SerializeField] float currentTime = 0f;
     int tr = 0;
-    [SerializeField] List<float> timeModes = new List<float>() { 20f, 27f, 47f, 54f, 59f };
+    [SerializeField] List<float> timeModes = new List<float>() { 7f, 27f, 34f, 54f, 59f, 79f, 84f };
     [SerializeField] float timerInFrightened = 5f;
     [SerializeField] GameObject light;
     bool canMove = true;
@@ -231,7 +231,7 @@ public class EnemyAI1 : MonoBehaviour
     {
         currentTime += Time.deltaTime;
         if (tr >= (timeModes.Count)) { return; }
-        if (currentTime > timeModes[tr])
+        if ((currentTime > timeModes[tr]))
         {
             ChangeEnemyMode();
             tr += 1;
@@ -244,7 +244,7 @@ public class EnemyAI1 : MonoBehaviour
         {
             frightenedMode = false;
             light.SetActive(false);
-            if (tr % 2 != 0)
+            if (tr % 2 == 0)
             {
                 scatterMode = true;
                 GetComponent<Pathfinding>().SearchPath(pathDotsTransform[scatterPointNumber]);
